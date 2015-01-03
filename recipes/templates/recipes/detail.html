@@ -1,0 +1,9 @@
+<h1>{{ recipe.name }}</h1>
+
+<ul>
+    {% for item in recipe.line_items.all %}
+        <li>{{ item.full_name }}</li>
+    {% endfor %}
+</ul>
+
+<p>{{ recipe.details | linebreaks }}</p>

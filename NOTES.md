@@ -1,0 +1,3 @@
+ - Began with website directory
+ - Added venv
+ - Installed Django in venv through PIP
