@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+{{ block.super }}
+{{ recipe.name|default:"New Recipe" }}
+{% endblock page_title %}
+
+{% block content %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+
+<div class="row">
+    <h1>{% if recipe.name %}Edit - {% endif %}{{ recipe.name|default:"New Recipe" }}</h1>
+</div>
+
+{% include "messages.html" %}
+
+<form action="{% if recipe %}{% url 'recipe:edit' recipe.pk %}{% else %}{% url 'recipe:new' %}{% endif %}" method="post">
+    {% csrf_token %}
+
+    <div class="row">
+        <h3>Title</h3>
+        <input type="text"
+               name="name"
+               size="50"
+               placeholder="Spaghetti and Meatballs"
+               value="{{ recipe.name }}"/>
+    </div>
+
+    <div class="row">
+        <h3>Brief Description<br>
+            <small>Provide a short description of the recipe (120 Characters max.)</small>
+        </h3>
+        <textarea name="short"
+                  cols="50"
+                  placeholder="A traditional italian dinner with herbs and spices">{{ recipe.short_description }}</textarea>
+    </div>
+
+    <div class="row">
+        <h3>Directions</h3>
+        <textarea type="text"
+               name="details"
+               cols="50"
+               rows="6"
+               placeholder="Spaghetti and Meatballs">{{ recipe.details }}</textarea>
+    </div>
+
+    <div class="row">
+        <h3>Ingredients</h3>
+    </div>
+
+
+    <div class="row"></div>
+        {% if recipe.line_items.all %}
+            {% for ingredient in recipe.line_items.all %}
+                <div class="row">
+                    {{ ingredient.full_name }}{% include "recipes/ingredients/edit_modal.html" %}
+                </div>
+            {% endfor %}
+        {% else %}
+            No Ingredients!
+        {% endif %}
+    </div>
+
+    <br>
+
+    <div class="row">
+        <input type="submit" class="col-md-2 col-md-offset-5" value="Submit" />
+    </div>
+</form>
+{% endblock content %}

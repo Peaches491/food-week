@@ -40,27 +40,30 @@ class LineItem(models.Model):
 
     def full_name(self):
         if not self.adjective_reverse:
-            return " ".join([self.get_amount(), str(self.ingredient_adjective), str(self.ingredient_name)])
+            return " ".join([self.get_amount(),
+                             str(self.ingredient_adjective),
+                             str(self.ingredient_name)])
         else:
-            return " ".join([self.get_amount(), str(self.ingredient_name), str(self.ingredient_adjective)])
+            return " ".join([self.get_amount(),
+                             str(self.ingredient_name),
+                             str(self.ingredient_adjective)])
 
     def __str__(self):
         return self.full_name()
 
 
 class Recipe(models.Model):
-    name = models.CharField(max_length=200)
-    add_date = models.DateField('date added')
+    name = models.CharField(max_length=200, blank=False)
+    add_date = models.DateField('date added', default=timezone.now().date(), blank=False)
+    line_items = models.ManyToManyField(LineItem)
+    short_description = models.CharField(max_length=120, blank=True, default="")
+    details = models.TextField(default="")
 
     def was_added_recently(self):
         return self.add_date >= timezone.now().date() - datetime.timedelta(days=1)
     was_added_recently.admin_order_field = 'add_date'
     was_added_recently.boolean = True
     was_added_recently.short_description = 'Published recently?'
-
-    line_items = models.ManyToManyField(LineItem)
-
-    details = models.TextField()
 
     def __str__(self):
         return self.name

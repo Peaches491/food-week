@@ -1,9 +1,60 @@
-<h1>{{ recipe.name }}</h1>
+{% extends "base.html" %}
 
-<ul>
-    {% for item in recipe.line_items.all %}
-        <li>{{ item.full_name }}</li>
-    {% endfor %}
-</ul>
 
-<p>{{ recipe.details | linebreaks }}</p>
+
+{% block top_level_block %}
+{% endblock top_level_block %}
+
+
+{% block page_title %}
+    {{ block.super }}
+    {{ recipe.name }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <h1>{{ recipe.name }}</h1>
+</div>
+
+{% include "messages.html" %}
+
+<div class="row">
+    {{ recipe.short_description }}
+</div>
+
+
+<div class="row">
+    <h3>Ingredients</h3>
+    <ul>
+        {% for ingredient in recipe.line_items.all %}
+            <li>{% include "recipes/ingredients/detail.html" %}</li>
+        {% empty %}
+            <li>No ingredients required!</li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+<div class="row">
+    <h3>Directions</h3>
+    <p>{{ recipe.details | default:"There are no directions!" | linebreaks }}</p>
+</div>
+
+<!--<script>
+    $(".hide-initial").css( "display", "none" );
+
+    function myFunction(inp, reverse) {
+        var show_elements = $("#" + inp + "_show");
+        var hide_elements = $("#" + inp + "_hide");
+        if(!reverse) {
+            show_elements.css("display", "initial");
+            hide_elements.css("display", "none");
+        } else {
+            hide_elements.css("display", "initial");
+            show_elements.css("display", "none");
+        }
+    }
+</script>-->
+
+{% endblock %}

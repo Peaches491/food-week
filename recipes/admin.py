@@ -4,10 +4,10 @@ from recipes.models import Recipe, Ingredient, LineItem, Unit
 
 class RecipeAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None,               {'fields': ['name', 'line_items', 'details']}),
+        (None,               {'fields': ['name', 'short_description', 'line_items', 'details']}),
         ('Date information', {'fields': ['add_date']}),
     ]
-    list_display = ('name', 'add_date', 'was_added_recently')
+    list_display = ('name','add_date', 'was_added_recently')
 
 
 class IngredientAdmin(admin.ModelAdmin):
