@@ -1,0 +1,3 @@
+[submodule "jquery.transit"]
+	path = jquery.transit
+	url = https://github.com/NV/jquery.transit.git
