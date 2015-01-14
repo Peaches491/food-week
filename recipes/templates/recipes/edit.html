@@ -22,7 +22,7 @@
         <h3>Title</h3>
         <input type="text"
                name="name"
-               size="50"
+               class="form-control"
                placeholder="Spaghetti and Meatballs"
                value="{{ recipe.name }}"/>
     </div>
@@ -32,7 +32,7 @@
             <small>Provide a short description of the recipe (120 Characters max.)</small>
         </h3>
         <textarea name="short"
-                  cols="50"
+                  class="form-control"
                   placeholder="A traditional italian dinner with herbs and spices">{{ recipe.short_description }}</textarea>
     </div>
 
@@ -40,7 +40,7 @@
         <h3>Directions</h3>
         <textarea type="text"
                name="details"
-               cols="50"
+               class="form-control"
                rows="6"
                placeholder="Spaghetti and Meatballs">{{ recipe.details }}</textarea>
     </div>
@@ -50,22 +50,45 @@
     </div>
 
 
-    <div class="row"></div>
-        {% if recipe.line_items.all %}
-            {% for ingredient in recipe.line_items.all %}
-                <div class="row">
-                    {{ ingredient.full_name }}{% include "recipes/ingredients/edit_modal.html" %}
-                </div>
-            {% endfor %}
-        {% else %}
-            No Ingredients!
-        {% endif %}
-    </div>
+    {% if recipe.line_items.all %}
+        {% for ingredient in recipe.line_items.all %}
+            {% with  modal_suffix=forloop.counter modal_icon="pencil" modal_button_label="Edit" button_class="btn-edit btn-circle btn-sm"%}
+            <div class="row">
+                <p style="display:inline;">{{ ingredient.full_name }}</p>
+                <span data-toggle="tooltip" data-placement="left" title="Tooltip on left">
+                    {% include "recipes/ingredients/edit_modal.html" %}
+                </span>
+            </div>
+            {% endwith %}
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            <strong>Woah now!</strong> There don't seem to be any ingredients in this recipe!
+            <a href="#" data-toggle="modal"
+               data-target="#ingredient_modal_add"
+               class="alert-link">Add one</a> now?
+        </div>
+    {% endif %}
+
+
+    {% with ingredient="" button_class="btn-primary btn-sm" modal_suffix="add" modal_button_label="Add Ingredient" modal_icon="plus"%}
+        <div class="row {% if not recipe.line_items.all %}hidden{% endif %}">
+            {% include "recipes/ingredients/edit_modal.html" %}
+        </div>
+    {% endwith %}
 
     <br>
 
-    <div class="row">
-        <input type="submit" class="col-md-2 col-md-offset-5" value="Submit" />
+    <div class="row ">
+        <div class="col-md-4 col-md-offset-4">
+            <button type="submit" class="btn btn-success btn-block">Submit</button>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-edit btn-block">Cancel</button>
+        </div>
     </div>
+
+
 </form>
+
 {% endblock content %}

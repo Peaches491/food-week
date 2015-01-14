@@ -37,27 +37,12 @@ def new(request, recipe_id=None):
     return render(request, 'recipes/edit.html', context)
 
 
-def add(request):
-    try:
-        new_recipe = Recipe(name=request.POST['name'])
-    except Exception:
-        return render(request, 'recipes/edit.html', {
-            'error_message': "You didn't select a choice.",
-        })
-    else:
-        new_recipe.save()
-        return HttpResponseRedirect(reverse('recipe:detail', args=(new_recipe.id,)))
-
-
 def edit(request, recipe_id=None):
     if request.method == 'POST':
         print request.POST
 
         try:
             if recipe_id:
-                # recipe_id = int(float(recipe_id))
-                print "Has ID: ", recipe_id
-                print "ID Type:", type(recipe_id)
                 recipe = Recipe.objects.get(pk=recipe_id)
             else:
                 recipe = Recipe()
@@ -66,13 +51,12 @@ def edit(request, recipe_id=None):
             recipe.details = request.POST["details"]
             # TODO Handle ingredients
         except Exception as ex:
-            print ex
             messages.error(request, ex.message)
             return HttpResponseRedirect(reverse('recipe:edit', args=(recipe_id,)))
         else:
             messages.success(request, "Your changes have been saved!")
             print recipe.save()
-            return HttpResponseRedirect(reverse('recipe:detail', args=(recipe_id,)))
+            return HttpResponseRedirect(reverse('recipe:detail', args=(recipe.pk,)))
 
     else:
         return new(request, recipe_id=recipe_id)

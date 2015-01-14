@@ -1,7 +1,30 @@
+
+{# 'debug', 'info', 'success', 'warning', 'error',#}
+
 {% for message in messages %}
-<div class="alert alert-danger" role="alert">
-  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-  <span class="sr-only">Error:</span>
-  {{ message }}
-</div>
+    {% if message.level == 25 %} {# Success #}
+      {% with alert_level="success" sr_label="Succes" icon="ok-sign"%}
+        {% include "message.html" %}
+      {% endwith %}
+    {% elif message.level == 20 %} {# Info #}
+      {% with alert_level="info" sr_label="Info" icon="info-sign"%}
+        {% include "message.html" %}
+      {% endwith %}
+    {% elif message.level == 10 %} {# Debug #}
+      {% with alert_level="info" sr_label="Debug" icon="question-sign"%}
+        {% include "message.html" %}
+      {% endwith %}
+    {% elif message.level == 30 %} {# Warning #}
+      {% with alert_level="warning" sr_label="Warning" icon="warning-sign"%}
+        {% include "message.html" %}
+      {% endwith %}
+    {% elif message.level ==  40%} {# Error #}
+      {% with alert_level="danger" sr_label="Error" icon="exclamation-sign"%}
+        {% include "message.html" %}
+      {% endwith %}
+    {% else %}
+      {% with alert_level="warning" sr_label="Unknown Message Level" icon="question-sign"%}
+        {{ message.level }}{% include "message.html" %}
+      {% endwith %}
+    {% endif %}
 {% endfor %}
