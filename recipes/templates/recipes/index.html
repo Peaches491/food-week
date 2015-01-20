@@ -1,6 +1,17 @@
 {% extends "base.html" %}
 
+{% block page_title %}
+{{ block.super }}
+Recipe List
+{% endblock %}
+
 {% block content %}
+
+<div class="row">
+    <h1 class="col-12-md">Recipe List</h1>
+</div>
+
+<div class="row">
 {% if latest_question_list %}
     <ul>
     {% for recipe in latest_question_list %}
@@ -10,4 +21,8 @@
 {% else %}
     <p>No polls are available.</p>
 {% endif %}
+
+<a class="btn btn-primary" href="{% url "recipe:new" %}">New Recipe</a>
+
+</div>
 {% endblock content %}

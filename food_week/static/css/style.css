@@ -1,14 +1,25 @@
-.btn-circle.btn-sm:not(:hover) > span:not(.glyphicon) {
+
+.btn-tooltip.btn-sm:hover {
+    transition: background 0.5s ease 0.4s;
+    background: lightgray;
+}
+
+.btn-tooltip.btn-sm:not(:hover) {
+    transition: background 0.5s ease 0.4s;
+    background: transparent;
+}
+
+.btn-tooltip.btn-sm:not(:hover) > span:not(.glyphicon) {
     background: transparent;
     color: transparent;
 }
-.btn-circle.btn-sm:hover > span:not(.glyphicon) {
-    transition: all 0.3s ease 0.2s;
+.btn-tooltip.btn-sm:hover > span:not(.glyphicon) {
+    transition: all 0.5s ease 0.2s;
     background: transparent;
     color: black;
 }
-.btn-circle.btn-sm:hover {
-    transition: border-radius 2s ease 0.2s, width 2s ease 0.2s;
-    border-radius: 4px;
-    width: auto;
+.btn-tooltip.btn-sm:hover {
+    padding-right: 6px;
 }
+
+/*.btn-*/

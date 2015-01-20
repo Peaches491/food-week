@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="btn-group">
+        <button type="button" class="btn btn-default" onclick="food_week.testing.dataPost()">Send Post</button>
+    </div>
+</div>
+
+<script>
+    $.namespace("food_week.testing");
+
+    food_week.testing.post_data = {};
+
+    food_week.testing.post_data["testing"] = true;
+    food_week.testing.gather_data = function(){
+        console.log("gather_data not overridden!");
+        return {};
+    };
+
+    var ajax_url = "";
+    {% if recipe %}
+    ajax_url = "{% url 'recipe:edit' recipe.pk %}";
+    {% else %}
+    ajax_url = "{% url 'recipe:new' %}";
+    {% endif %}
+
+    food_week.testing.dataPost = function() {
+        var data = food_week.testing.gather_data();
+
+        console.log(ajax_url);
+
+        console.log("AJAX Post sent")
+
+        console.log($.ajax({
+            type: "POST",
+            url: ajax_url,
+            dataType: "json",
+            data: data,
+            complete: redirectAJAXHandler
+        }));
+    };
+</script>

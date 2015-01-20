@@ -8,14 +8,18 @@
 {% block content %}
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
+{% include "testing_panel.html" %}
+
+{% include "messages.html" %}
 
 <div class="row">
     <h1>{% if recipe.name %}Edit - {% endif %}{{ recipe.name|default:"New Recipe" }}</h1>
 </div>
 
-{% include "messages.html" %}
 
-<form action="{% if recipe %}{% url 'recipe:edit' recipe.pk %}{% else %}{% url 'recipe:new' %}{% endif %}" method="post">
+<form id="recipeForm"
+      action="{% if recipe %}{% url 'recipe:edit' recipe.pk %}{% else %}{% url 'recipe:new' %}{% endif %}"
+      method="post">
     {% csrf_token %}
 
     <div class="row">
@@ -48,47 +52,67 @@
     <div class="row">
         <h3>Ingredients</h3>
     </div>
-
-
-    {% if recipe.line_items.all %}
-        {% for ingredient in recipe.line_items.all %}
-            {% with  modal_suffix=forloop.counter modal_icon="pencil" modal_button_label="Edit" button_class="btn-edit btn-circle btn-sm"%}
-            <div class="row">
-                <p style="display:inline;">{{ ingredient.full_name }}</p>
-                <span data-toggle="tooltip" data-placement="left" title="Tooltip on left">
-                    {% include "recipes/ingredients/edit_modal.html" %}
-                </span>
-            </div>
-            {% endwith %}
-        {% endfor %}
-    {% else %}
-        <div class="alert alert-warning" role="alert">
-            <strong>Woah now!</strong> There don't seem to be any ingredients in this recipe!
-            <a href="#" data-toggle="modal"
-               data-target="#ingredient_modal_add"
-               class="alert-link">Add one</a> now?
-        </div>
-    {% endif %}
-
-
-    {% with ingredient="" button_class="btn-primary btn-sm" modal_suffix="add" modal_button_label="Add Ingredient" modal_icon="plus"%}
-        <div class="row {% if not recipe.line_items.all %}hidden{% endif %}">
-            {% include "recipes/ingredients/edit_modal.html" %}
-        </div>
-    {% endwith %}
-
-    <br>
-
-    <div class="row ">
-        <div class="col-md-4 col-md-offset-4">
-            <button type="submit" class="btn btn-success btn-block">Submit</button>
-        </div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-edit btn-block">Cancel</button>
-        </div>
-    </div>
-
-
 </form>
+
+
+{% if recipe.line_items.all %}
+    {% for ingredient in recipe.line_items.all %}
+        <div class="row">
+            {% with  modal_suffix=forloop.counter modal_icon="pencil" modal_button_label="Edit" button_class="btn-edit btn-circle btn-sm btn-tooltip"%}
+            {% include "recipes/ingredients/ingredient_modal.html" %}
+            {% endwith %}
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-warning" role="alert">
+        <strong>Woah now!</strong> There don't seem to be any ingredients in this recipe!
+        <a href="#" data-toggle="modal"
+           data-target="#ingredient_modal_add"
+           class="alert-link">Add one</a> now?
+    </div>
+{% endif %}
+
+
+<div class="row {% if not recipe.line_items.all %}hidden{% endif %}">
+    {% with ingredient="" button_class="btn-primary btn-sm" modal_suffix="add" modal_button_label="Add Ingredient" modal_icon="plus"%}
+    {% include "recipes/ingredients/ingredient_modal.html" %}
+    {% endwith %}
+</div><br>
+
+<div class="row">
+    <div class="col-xs-4 col-xs-offset-4">
+        <button type="submit" class="btn btn-success btn-block">Submit</button>
+    </div>
+    <div>
+        <a class="btn btn-default"
+           href="{% if recipe %}{% url "recipe:detail" recipe.pk %}
+                {% else %}{{ request.META.HTTP_REFERER }}{% endif %}">Cancel</a>
+    </div>
+</div><br>
+
+{% if recipe %}
+<div class="row">
+    <div class="col-xs-6 col-xs-offset-3">
+        <form method="POST"
+            action="{% url 'recipe:edit' recipe.pk %}">
+{#            <input type="hidden" name="delete-recipe" value="{{ recipe.pk }}"/>#}
+            <button type="submit" class="btn btn-danger btn-block">Delete Recipe</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<script>
+$(document).ready(function() {
+    ajaxPrep("{{ csrf_token }}");
+
+    id_or_new = {% if recipe %}{{ recipe.pk }}{% else %}"new"{% endif %};
+
+    food_week.testing.gather_data = function() {
+        console.log("Gathering Data");
+        return $( "#recipeForm" ).serialize();
+    };
+});
+</script>
 
 {% endblock content %}
